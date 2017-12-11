@@ -1,0 +1,20 @@
+This android docker image is based off https://github.com/circleci/circleci-images.
+It has been modified to just produce android docker images.
+The goal of this forked repo is to create an android docker image with android emulator support
+
+How to create the docker image:
+1) $make -f Makefile
+2) $cd android/images
+3) select which android api version you want. (ie. $cd android/images/api-25-alpha)
+4) $docker build -t {dockerhub-account-name}/{repo-name}:tag <path-to-dockerfile>
+ie. $docker build -t minhiew/circleci:0.0.1 ./Dockerfile
+
+How to modify the android image
+1) cd android
+2) modify Dockerfile.m4
+3) run "How to create docker image" steps again
+
+How to upload the docker file to dockerhub so that it is useable by circle-ci
+1) https://circleci.com/docs/2.0/custom-images/
+
+
