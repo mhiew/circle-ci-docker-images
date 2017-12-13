@@ -64,7 +64,8 @@ ENV PATH=${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bi
 
 RUN mkdir ~/.android && echo '### User Sources for Android SDK Manager' > ~/.android/repositories.cfg
 
-RUN yes | sdkmanager --licenses && sdkmanager --update
+RUN yes | sdkmanager --licenses || true
+RUN sdkmanager --update
 
 # Update SDK manager and install system image, platform and build tools
 RUN sdkmanager \
@@ -85,3 +86,13 @@ RUN sdkmanager \
   "build-tools;27.0.0"
 
 RUN sdkmanager "platforms;android-API_LEVEL"
+
+#Download emulator image
+RUN sdkmanager "system-images;android-16;default;armeabi-v7a"
+
+#Export paths so that we can run the emulator
+ENV LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
+
+#Create an emulator instance called test
+RUN echo "no" | avdmanager create avd -n android16 -k "system-images;android-16;default;armeabi-v7a"
+
