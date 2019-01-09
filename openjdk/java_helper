@@ -19,11 +19,9 @@ SBT_URL_PATTERN = r'https://[^"]*tgz'
 
 def get_latest_version(url, pattern):
     """Return latest version of given tool 
-
     Args:
         url: url to search 
         pattern: regex pattern to get version
-
     Returns:
         A string representing the latest version of a given tool 
     """

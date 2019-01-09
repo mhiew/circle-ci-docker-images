@@ -17,7 +17,7 @@ function generate_dockerfile {
   echo "${dockerfile_path}"
 }
 
-for API in 26; do
+for API in 28; do
   echo Generating Android ${API} Dockerfiles
 
   tag=api-${API}-alpha

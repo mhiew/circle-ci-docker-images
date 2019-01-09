@@ -24,4 +24,6 @@ ie. $docker attach test
 How to upload the docker file to dockerhub so that it is useable by circle-ci
 1) follow instructions here:  https://circleci.com/docs/2.0/custom-images/
 
-
+ie:
+$ docker login
+$ docker push minhiew/circleci:0.0.1

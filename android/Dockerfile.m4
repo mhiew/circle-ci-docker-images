@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk
+FROM openjdk:8-jdk-slim
 
 # Initial Command run as `root`.
 
@@ -20,7 +20,9 @@ RUN sudo apt-get update -qqy && sudo apt-get install -qqy \
         apt-transport-https \
         lsb-release
 
-RUN sudo easy_install -U pip && \
+RUN sudo apt-get install gcc-multilib && \
+    sudo easy_install -U pip && \
+    sudo pip uninstall crcmod && \
     sudo pip install -U crcmod
 
 RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
@@ -37,17 +39,20 @@ ARG android_home=/opt/android/sdk
 # SHA-256 444e22ce8ca0f67353bda4b85175ed3731cae3ffa695ca18119cbacef1c1bea0
 
 RUN sudo apt-get update && \
-    sudo apt-get install --yes xvfb gcc-multilib lib32z1 lib32stdc++6 build-essential libcurl4-openssl-dev
+    sudo apt-get install --yes \
+        xvfb lib32z1 lib32stdc++6 build-essential \
+        libcurl4-openssl-dev libglu1-mesa libxi-dev libxmu-dev \
+        libglu1-mesa-dev
 
 # Install Ruby
 RUN cd /tmp && wget -O ruby-install-0.6.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.1.tar.gz && \
     tar -xzvf ruby-install-0.6.1.tar.gz && \
     cd ruby-install-0.6.1 && \
     sudo make install && \
-    ruby-install --cleanup ruby 2.4.1 && \
+    ruby-install --cleanup ruby 2.4.3 && \
     rm -r /tmp/ruby-install-*
 
-ENV PATH ${HOME}/.rubies/ruby-2.4.1/bin:${PATH}
+ENV PATH ${HOME}/.rubies/ruby-2.4.3/bin:${PATH}
 RUN echo 'gem: --env-shebang --no-rdoc --no-ri' >> ~/.gemrc && gem install bundler
 
 # Download and install Android SDK
@@ -83,7 +88,12 @@ RUN sdkmanager \
   "build-tools;25.0.3" \
   "build-tools;26.0.1" \
   "build-tools;26.0.2" \
-  "build-tools;27.0.0"
+  "build-tools;27.0.0" \
+  "build-tools;27.0.1" \
+  "build-tools;27.0.2" \
+  "build-tools;27.0.3" \
+  "build-tools;28.0.0" \
+  "build-tools;28.0.3"
 
 RUN sdkmanager "platforms;android-API_LEVEL"
 
@@ -94,5 +104,7 @@ RUN sdkmanager "system-images;android-16;default;armeabi-v7a"
 ENV LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
 
 #Create an emulator instance called test
-RUN echo "no" | avdmanager create avd -n android16 -k "system-images;android-16;default;armeabi-v7a"
+RUN echo "no" | avdmanager create avd -n android16 -k "system-images;android-16;default;armeabi-v7a" -c 500M
 
+#Install Dependencies for Android Screenshot Tests
+RUN sudo pip install Pillow
