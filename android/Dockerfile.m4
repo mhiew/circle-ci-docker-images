@@ -98,13 +98,13 @@ RUN sdkmanager \
 RUN sdkmanager "platforms;android-API_LEVEL"
 
 #Download emulator image
-RUN sdkmanager "system-images;android-16;default;armeabi-v7a"
+RUN sdkmanager "system-images;android-21;default;armeabi-v7a"
 
 #Export paths so that we can run the emulator
 ENV LD_LIBRARY_PATH=${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib
 
 #Create an emulator instance called test
-RUN echo "no" | avdmanager create avd -n android16 -k "system-images;android-16;default;armeabi-v7a" -c 500M
+RUN echo "no" | avdmanager create avd -n test -k "system-images;android-21;default;armeabi-v7a" 
 
 #Install Dependencies for Android Screenshot Tests
 RUN sudo pip install Pillow
